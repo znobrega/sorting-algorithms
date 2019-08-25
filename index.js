@@ -9,6 +9,12 @@ class Sort {
     return max
   }
 
+  swap(arr, minor, major) {
+    const aux = arr[minor];
+    arr[minor] = arr[major];
+    arr[major] = aux;
+  }
+
   countingSort(a,b) {
     const c = [];
     let k = this.maxNum(a);
@@ -57,6 +63,16 @@ countingSortRadix(a, b, exp) {
     console.log(`Desordenado: ${a}`)
     console.log(`Ordenado: ${b}`)
   }
+
+  bubbleSort(arr, n) {
+    for(let i = 0; i < n-1; i++) {
+      for (let j=0; j < n-i-1; j++) {
+        if(arr[j] > arr[j+1])
+          this.swap(arr,j, j+1)
+      }
+    }
+    console.log(arr)
+  }
 }
 
 
@@ -65,4 +81,5 @@ const s = new Sort();
 const a = [5, 2, 3, 4, 2,1,2,3,20]
 const b = new Array(a.length)
 
-s.countingSort(a,b)
+// s.countingSort(a,b)
+s.bubbleSort(a, a.length)

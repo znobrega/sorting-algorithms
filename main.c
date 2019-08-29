@@ -1,7 +1,8 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 void CountingSort(int a[], int b[], int k) {
-  // k = a.length
+  // k = Array length
   int i,max = 0;
 
   for (i = 0; i < k; i++) {
@@ -9,7 +10,7 @@ void CountingSort(int a[], int b[], int k) {
       max = a[i];
   }
 
-  int c[max];
+  int c[max + 1];
 
   for (i = 0; i < max + 1; i++) {
     c[i] = 0;
@@ -29,31 +30,30 @@ void CountingSort(int a[], int b[], int k) {
 
 }
 
-void CountingSortRadix(int a[], int size, int exp) {
+void CountingSortRadix(int a[], int b[], int size, int exp) {
   int i,max = 0;
-  int b[size];
-  int c[10] = {0};
-
-  for (i = 0; i < max + 1; i++) {
-    c[i] = 0;
-  }
+  int c[19] = {0};
 
   for (i = 0; i < size; i ++) {
-    c[a[i]]++;
+    c[((a[i]/exp)%10)+9]++;
   }
 
-  for (i = 0; i < max + 1; i++) {
+  for (i = 1; i < 19; i++) {
     c[i] += c[i-1];
   }
 
-  for (i = size; i >= 0; i--) {
-    b[--c[a[i]]] = a[i];
+  for (i = size - 1; i >= 0; i--) {
+    int aux = --c[((a[i]/exp)%10) + 9];
+    b[aux]= a[i];
+    
   }
+
+  for (i = 0; i < size; i++) 
+        a[i] = b[i]; 
 
 }
 
-
-void RadixSort(int arr[], int size) {
+void RadixSort(int arr[], int b[], int size) {
   int i, maxNum = arr[0];
   
   for (i = 0; i < size; i++) {
@@ -62,7 +62,7 @@ void RadixSort(int arr[], int size) {
   }
 
   for (int exp = 1; maxNum/exp > 0; exp *= 10) {
-    CountingSortRadix(arr, size, exp);
+    CountingSortRadix(arr, b, size, exp);
   }
 }
 
@@ -97,22 +97,47 @@ void SelectionSort(int arr[], int n) {
 }
 
 int main(void) {
-  int n = 6;
-  int arr[n];
-  arr[0] = 3;
-  arr[1] = 2;
-  arr[2] = 1;
-  arr[3] = 3;
-  arr[4] = 2;
-  arr[5] = 1;
 
-  //SelectionSort(arr, n);
-  int c[10] = {0};
+  char *fileName = "./instancias-num/num.100000.4.in";
 
-  for (int i = 0; i < n; i++) {
-    printf("%d \n", c[i]);
-  }
 
-  printf("Hello World\n");
+  FILE * fp;
+    char * line = NULL;
+    size_t len = 0;
+    ssize_t read;
+
+    fp = fopen(fileName, "r");
+    if (fp == NULL)
+        exit(EXIT_FAILURE);
+
+    int lineNumber = 0;
+    
+    while ((read = getline(&line, &len, fp)) != -1) {
+        lineNumber++;
+    }
+
+    int numbers[lineNumber];
+    lineNumber = 0;
+    fp = fopen(fileName, "r");
+    while ((read = getline(&line, &len, fp)) != -1) {
+        int number = atoi(line);
+        numbers[lineNumber] = number;
+        lineNumber++;
+    }
+
+
+    int size = lineNumber;
+    int b[size];
+    RadixSort(numbers, b, size);
+
+    for (int i = 0; i < lineNumber; i++) {
+      printf("%d \n", b[i]);
+    }
+
+    fclose(fp);
+    if (line)
+        free(line);
+    exit(EXIT_SUCCESS);
+
   return 0;
 }

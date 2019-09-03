@@ -1,31 +1,37 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void CountingSort(int a[], int b[], int k) {
-  // k = Array length
-  int i,max = 0;
+#define SWAP(a, b) { int aux = a; a = b; b = aux; }
 
-  for (i = 0; i < k; i++) {
+void CountingSort(int a[], int b[], int size) {
+  int i, max = 0, min = 0, k;
+
+  for (i = 0; i < size; i++) {
     if (a[i] > max) 
       max = a[i];
+    
+    if (a[i] < min) 
+      min = a[i];
   }
+  
+  k = max - min + 1;
 
-  int c[max + 1];
+  int c[k + 1];
 
-  for (i = 0; i < max + 1; i++) {
+  for (i = 0; i < k; i++) {
     c[i] = 0;
   }
 
-  for (i = 0; i < k; i ++) {
-    c[a[i]]++;
+  for (i = 0; i < size; i ++) {
+    c[a[i] - min]++;
   }
 
-  for (i = 0; i < max + 1; i++) {
+  for (i = 0; i < k; i++) {
     c[i] += c[i-1];
   }
 
-  for (i = k; i >= 0; i--) {
-    b[--c[a[i]]] = a[i];
+  for (i = size; i >= 0; i--) {
+    b[--c[a[i] - min]] = a[i];
   }
 
 }
@@ -53,7 +59,7 @@ void CountingSortRadix(int a[], int b[], int size, int exp) {
 
 }
 
-void RadixSort(int arr[], int b[], int size) {
+void RadixSort(int arr[], int outPut[], int size) {
   int i, maxNum = arr[0];
   
   for (i = 0; i < size; i++) {
@@ -62,11 +68,15 @@ void RadixSort(int arr[], int b[], int size) {
   }
 
   for (int exp = 1; maxNum/exp > 0; exp *= 10) {
-    CountingSortRadix(arr, b, size, exp);
+    CountingSortRadix(arr, outPut, size, exp);
+  }
+
+  for (int i = 0; i < size; i++) {
+    outPut[i] = arr[i];
   }
 }
 
-void InsertionSort(int arr[], int n) {
+void InsertionSort(int arr[], int outPut[], int n) {
   int i, j, pivo = 0;
   for (i = 1; i <= n-1; i++) {
     pivo = arr[i];
@@ -77,9 +87,14 @@ void InsertionSort(int arr[], int n) {
     }
     arr[j+1] = pivo;
   }
+
+  
+  for (int i = 0; i < n; i++) {
+    outPut[i] = arr[i];
+  }
 }
 
-void SelectionSort(int arr[], int n) {
+void SelectionSort(int arr[], int outPut[], int n) {
   int i, j, iMin, temp;
   for (i = 0; i <= n-1; i++) {
     iMin = i;
@@ -89,28 +104,36 @@ void SelectionSort(int arr[], int n) {
       }
     }
     if (arr[i] !=  arr[iMin]) {
-      temp = arr[i];
-      arr[i] = arr[iMin];
-      arr[iMin] = temp;
+      SWAP(arr[i], arr[iMin]);
     }
+  }
+
+  for (int i = 0; i < n; i++) {
+    outPut[i] = arr[i];
   }
 }
 
-void BubbleSort(int arr[], int n) {
+void BubbleSort(int arr[], int outPut[], int n) {
   for(int i = 0; i < n-1; i++) {
       for (int j = 0; j < n-i-1; j++) {
-        if(arr[j] > arr[j+1])
-          int aux = arr[j];
-          arr[j] = arr[j+1];
-          arr[j+1] = aux; 
+        if(arr[j] > arr[j+1]) {
+          SWAP(arr[j], arr[j+1])
+        }
       }
     }
+
+  for (int i = 0; i < n; i++) {
+    outPut[i] = arr[i];
+  }
+  
 }
 
-int main(void) {
+int main(int argc, char* argv[]) {
 
-  char *fileName = "./instancias-num/num.100000.4.in";
+  
+  char *fileName;
 
+  fileName = argv[2];
 
   FILE * fp;
     char * line = NULL;
@@ -136,13 +159,34 @@ int main(void) {
         lineNumber++;
     }
 
-
     int size = lineNumber;
-    int b[size];
-    RadixSort(numbers, b, size);
+    int outPut[size];
 
-    for (int i = 0; i < lineNumber; i++) {
-      printf("%d \n", b[i]);
+    switch (atoi(argv[1])) {
+      case 1:
+        CountingSort(numbers, outPut, size);
+        printf("counting");
+        fflush(stdout);
+        break;    
+      case 2:
+        RadixSort(numbers, outPut, size);;
+        break;
+      case 3:
+        SelectionSort(numbers, outPut, size);
+        break;
+      case 4:
+        InsertionSort(numbers, outPut, size);
+        break;
+      case 5:
+        BubbleSort(numbers, outPut, size);
+        break;
+      default:  
+        BubbleSort(numbers, outPut, size);
+        break;
+    }
+
+    for (int i = 0; i < size; i++) {
+      printf("%d \n", outPut[i]);
     }
 
     fclose(fp);

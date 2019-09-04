@@ -1,7 +1,7 @@
 # Sorting algorithms
 
 ## Os argumentos devem ser passados na função main
-#### O primeiro argumento é um número inteiro, que representa o algor
+#### O primeiro argumento é um número inteiro, que representa o algoritmo
 #### O segundo argumento é o diretório do arquivo
 
 Alg. | Nome

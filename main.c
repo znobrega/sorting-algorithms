@@ -128,8 +128,52 @@ void BubbleSort(int arr[], int outPut[], int n) {
   
 }
 
-int main(int argc, char* argv[]) {
+void Merge(int aux[], int init, int mid, int end) {
+}
 
+
+void MergeSort(int arr[], int p, int r) {
+  if (p < r) {
+    int q = (p+q)/2;
+    MergeSort(arr, p, q);
+    MergeSort(arr, p, q);
+    Merge(arr, p, q, r);
+  }
+}
+
+int partition(int arr[], int inicio, int fim) {
+  int pivo = arr[0];
+  int i = inicio - 1;
+  int j = fim + 1;
+  int q = (inicio + fim)/2;
+  while (1) {
+    do {
+      i = i + 1;
+    } while(arr[i] <= pivo);
+
+    do {
+      j = j - 1;
+    } while(arr[j] > pivo);
+
+    if (i >= j)
+      break;
+    SWAP(arr[i], arr[j]);
+  }
+
+
+  return i;
+}
+
+void QuickSort(int arr[], int l, int r) {
+  if (l < r) {
+    int q = partition(arr, l, r);
+    QuickSort(arr, l, q-1);
+    QuickSort(arr, q + 1, r);
+  }
+
+
+
+int main(int argc, char* argv[]) {
   
   char *fileName;
 

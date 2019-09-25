@@ -129,47 +129,93 @@ void BubbleSort(int arr[], int outPut[], int n) {
 }
 
 void Merge(int aux[], int init, int mid, int end) {
+  int i,j,k;
+  int n1 = mid - init + 1;
+  int n2 = end - mid;
+
+  int left[n1], right[n2];
+
+  for (i = 0; i < n1; i++) {
+    left[i] = aux[init + i];
+  }
+
+  for (j = 0; j < n2; j++) {
+    right[j] = aux[mid + 1 + j];
+  }
+
+  
+    i = 0; 
+    j = 0; 
+    k = init; 
+    while (i < n1 && j < n2) 
+    { 
+        if (left[i] <= right[j]) 
+        { 
+            aux[k] = left[i]; 
+            i++; 
+        } 
+        else
+        { 
+            aux[k] = right[j]; 
+            j++; 
+        } 
+        k++; 
+    } 
+  
+
+    while (i < n1) 
+    { 
+        aux[k] = left[i]; 
+        i++; 
+        k++; 
+    } 
+  
+    while (j < n2) 
+    { 
+        aux[k] = right[j]; 
+        j++; 
+        k++; 
+    } 
 }
 
+void MergeSort(int arr[], int init, int end) {
+  if (init < end) {
+    int mid = (init+end)/2;
+    MergeSort(arr, init, mid);
+    MergeSort(arr, mid+1, end);
 
-void MergeSort(int arr[], int p, int r) {
-  if (p < r) {
-    int q = (p+q)/2;
-    MergeSort(arr, p, q);
-    MergeSort(arr, p, q);
-    Merge(arr, p, q, r);
+    Merge(arr, init, mid, end);
   }
 }
 
-int partition(int arr[], int inicio, int fim) {
-  int pivo = arr[0];
-  int i = inicio - 1;
-  int j = fim + 1;
-  int q = (inicio + fim)/2;
-  while (1) {
-    do {
-      i = i + 1;
-    } while(arr[i] <= pivo);
+int partition(int arr[], int init, int end) {
+  int pivot = arr[end];
 
-    do {
-      j = j - 1;
-    } while(arr[j] > pivo);
+  int i = init - 1;
 
-    if (i >= j)
-      break;
-    SWAP(arr[i], arr[j]);
+  for (int j = init; j <= end -1; j++) {
+
+    if (arr[j] < pivot) {
+      i++;
+      SWAP(arr[i], arr[j]);
+    }
+
   }
 
+  SWAP(arr[i + 1], arr[end]);
 
-  return i;
+  return (i + 1);
 }
 
-void QuickSort(int arr[], int l, int r) {
-  if (l < r) {
-    int q = partition(arr, l, r);
-    QuickSort(arr, l, q-1);
-    QuickSort(arr, q + 1, r);
+void QuickSort(int arr[], int init, int end) {
+  if (init < end) {
+    int q = partition(arr, init, end);
+    
+    QuickSort(arr, init, q - 1);
+    QuickSort(arr, q + 1, end);
   }
+
+}
 
 
 
@@ -182,7 +228,7 @@ int main(int argc, char* argv[]) {
   FILE * fp;
     char * line = NULL;
     size_t len = 0;
-    ssize_t read;
+    size_t read;
 
     fp = fopen(fileName, "r");
     if (fp == NULL)
@@ -209,7 +255,6 @@ int main(int argc, char* argv[]) {
     switch (atoi(argv[1])) {
       case 1:
         CountingSort(numbers, outPut, size);
-        printf("counting");
         fflush(stdout);
         break;    
       case 2:
@@ -224,13 +269,19 @@ int main(int argc, char* argv[]) {
       case 5:
         BubbleSort(numbers, outPut, size);
         break;
+      case 6:
+        MergeSort(numbers, 0, size);
+        break;
+      case 7:
+        QuickSort(numbers, 0, size);
+        break;
       default:  
         BubbleSort(numbers, outPut, size);
         break;
     }
 
     for (int i = 0; i < size; i++) {
-      printf("%d \n", outPut[i]);
+      printf("%d \n", numbers[i]);
     }
 
     fclose(fp);
